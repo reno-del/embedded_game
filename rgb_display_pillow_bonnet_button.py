@@ -104,6 +104,10 @@ draw = ImageDraw.Draw(image)
 # Draw a black filled box to clear the image.
 draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
+def clear():
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
+
 udlr_fill = "#00FF00"
 udlr_outline = "#00FFFF"
 button_fill = "#FF00FF"
@@ -111,95 +115,117 @@ button_outline = "#FFFFFF"
 
 fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 30)
 
+
+def player_i(num):
+    return num - 10 # start position of player
 def player_f(num):
-   return  num + 60
+   return  num + 10 # final position of player
 
 def shoot_a_i(num):
-    return num - 5
+    return num - 5 # front bullet's start point
 def shoot_a_f(num):
-    return shoot_a_i(num) - 20
+    return shoot_a_i(num) - 20 # front bullet's final point
 
 def shoot_b_i(num):
-    return num + 5
+    return num + 5  # back bullet's start point
 def shoot_b_f(num):
-    return shoot_b_i(num) + 20
+    return shoot_b_i(num) + 20 # back bullet's final point
+
+def draw_player(xi, yi, xf, yf):
+    draw.ellipse((xi, yi, xf, yf), outline=button_outline, fill = button_outline) # draw player
+
+def draw_bullet(xi, yi, xf, yf):
+     draw.line((xi, yi, xf, yf), fill = button_outline, width = 2, joint = None) # draw bullet
+    
+
 
 
 x = 100
-y = 150
+y = 150 # start point
+
 checkpoint_a = 0
-checkpoint_b = 0
+checkpoint_b = 0 # button turn off
+
 shoot_a_y = 0
-shoot_b_y = 0
+shoot_b_y = 0 # bullet pos
 
 while True:
 
-    draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
-   
+    clear()
+
     if checkpoint_a == 0:
         shoot_a_y = y
     else:
         shoot_a_y = shoot_a_y - 5
+        if shoot_a_y <= 0:
+            checkpoint_a = 0
+            shoot_a_y = y
+        
 
     if checkpoint_b== 0:
         shoot_b_y = y
-    else: shoot_b_y = shoot_b_y + 5
+    else:
+        shoot_b_y = shoot_b_y + 5
+        if shoot_b_y >= 200:
+            checkpoint_b = 0
+            shoot_b_y = y #
+        
 
     up_fill = 0
     if not button_U.value:  # up pressed
-        up_fill = udlr_fill
         y = y - 5
-    draw.polygon(
-        [(40, 40), (60, 4), (80, 40)], outline=udlr_outline, fill=up_fill
-    )  # Up
+    # move Up
 
     down_fill = 0
     if not button_D.value:  # down pressed
-        down_fill = udlr_fill
         y = y + 5
-    draw.polygon(
-        [(60, 120), (80, 84), (40, 84)], outline=udlr_outline, fill=down_fill
-    )  # down
+    # move down
 
     left_fill = 0
     if not button_L.value:  # left pressed
-        left_fill = udlr_fill
         x = x - 5
-    draw.polygon(
-        [(0, 60), (36, 42), (36, 81)], outline=udlr_outline, fill=left_fill
-    )  # left
+    # move left
 
     right_fill = 0
     if not button_R.value:  # right pressed
-        right_fill = udlr_fill
         x = x + 5
-    draw.polygon(
-        [(120, 60), (84, 42), (84, 82)], outline=udlr_outline, fill=right_fill
-    )  # right
+    # move right
 
     center_fill = 0
-    if not button_C.value:  # center pressed
-        center_fill = button_fill
-    draw.rectangle((40, 44, 80, 80), outline=button_outline, fill=center_fill)  # center
+    # center
 
     A_fill = 0
-    if not button_A.value:  # left pressed
-        A_fill = button_fill
-        checkpoint_a =  checkpoint_a+1
+    if not button_A.value:  # button 5 pressed
+        checkpoint_a =  checkpoint_a + 1
     if not checkpoint_a == 0:
-        draw.line(((player_f(x)+x)/2, shoot_a_i(shoot_a_y), (player_f(x)+x)/2, shoot_a_f(shoot_a_y)), fill = button_outline, width = 2, joint = None)
+        draw_bullet((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y)))
+         # draw front line
     
-    draw.ellipse((140, 80, 180, 120), outline=button_outline, fill=A_fill)  # A button
+    # A button
 
     B_fill = 0
-    if not button_B.value:  # left pressed
-        B_fill = button_fill
-        checkpoint_b  = checkpoint_b +1
+    if not button_B.value: # button 6 pressed
+        checkpoint_b  = checkpoint_b + 1
     if not checkpoint_b == 0:     
-        draw.line(((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y))), fill = button_outline, width = 2, joint = None)
-    draw.ellipse((190, 40, 230, 80), outline=button_outline, fill=B_fill)  # B button
+        draw.line(((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y))), fill = button_outline, width = 2, joint = None) #draw back line
+    
+    # B button
+    
+    
+    if x <= 0:
+        draw_player(0, y, player_f(0), player_f(y))
+   
+    elif x >= 240:
+        draw_player(player_i(200), y, 200, player_f(y))
+   
+    elif y <= 0:
+        draw_player(x, 0, player_f(x), player_f(y))
 
-    draw.ellipse((x, y, player_f(x), player_f(y)), outline=button_outline, fill = button_outline)# draw player
+    elif y >= 240:
+        draw_player(x, player_i(200), player_f(x), 200)
+
+    else:    
+        draw.ellipse((x, y, player_f(x), player_f(y)), outline=button_outline, fill = button_outline) # draw player
 
     # Display the Image
     disp.image(image)
