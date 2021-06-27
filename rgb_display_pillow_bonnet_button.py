@@ -120,76 +120,66 @@ def player_i(num):
     return num - 10 # start position of player
 def player_f(num):
    return  num + 10 # final position of player
+ 
+def up_card(y):
+    if not button_U.value:  # up pressed
+        y = y - 5
+    # move up card
 
-def shoot_a_i(num):
-    return num - 5 # front bullet's start point
-def shoot_a_f(num):
-    return shoot_a_i(num) - 20 # front bullet's final point
+def down_card(y):
+    if not button_D.value:
+        y = y + 5
+    # move down in card
 
-def shoot_b_i(num):
-    return num + 5  # back bullet's start point
-def shoot_b_f(num):
-    return shoot_b_i(num) + 20 # back bullet's final point
+def right_card(x):
+    if not button_R.value:
+        x = x + 5
+    # move right in
 
-def draw_player(xi, yi, xf, yf):
-    draw.ellipse((xi, yi, xf, yf), outline=button_outline, fill = button_outline) # draw player
+def left_card(x):
+    if not button_L.value:
+        x = x - 5
+    # move left
 
-def draw_bullet(xi, yi, xf, yf):
-     draw.line((xi, yi, xf, yf), fill = button_outline, width = 2, joint = None) # draw bullet
-    
+def total_card(x):
+    for i in range(0,52-x): # make deck [total(52) - x =] card number you defined
+        deck.pop()    
 
+def draw_card(x_pos, y_pos):
+    for j in range():
+        for i in range(40, 200):
+            draw.rectangle((x_pos, y_pos, 3, 4), outline=0, fill=0)
 
+spade = ['spadeace', 'spade2', 'spade3', 'spade4', 'spade5', 'spade6', 'spade7', 'spade8', 'spade9', 'spade10', 'spadejack', 'spadequeen', 'spadeking']
+
+heart = ['heartace', 'heart2', 'heart3', 'heart4', 'heart5', 'heart6', 'heart7', 'heart8', 'heart9', 'heart10', 'heartjack', 'heartqueen', 'heartking']
+
+diamond = ['diamondace', 'diamond2', 'diamond3', 'diamond4', 'diamond5', 'diamond6', 'diamond7', 'diamond8', 'diamond9', 'diamond10', 'diamondjack', 'diamondqueen', 'diamondking']
+
+clover = ['cloverace', 'clover2', 'clover3', 'clover4', 'clover5', 'clover6', 'clover7', 'clover8', 'clover9', 'clover9', 'cloverjack', 'cloverqueen', 'cloverking']
+
+deck = spade + heart + diamond + clover  # define deck
 
 x = 100
 y = 150 # start point
 
-checkpoint_a = 0
-checkpoint_b = 0 # button turn off
 
-shoot_a_y = 0
-shoot_b_y = 0 # bullet pos
 
 while True:
 
+    random.shuffle(deck) # randomly shuffle deck
+        
+    total card(40)
+
     clear()
 
-    if checkpoint_a == 0:
-        shoot_a_y = y
-    else:
-        shoot_a_y = shoot_a_y - 5
-        if shoot_a_y <= 0:
-            checkpoint_a = 0
-            shoot_a_y = y
-        
-
-    if checkpoint_b== 0:
-        shoot_b_y = y
-    else:
-        shoot_b_y = shoot_b_y + 5
-        if shoot_b_y >= 200:
-            checkpoint_b = 0
-            shoot_b_y = y #
-        
-
-    up_fill = 0
-    if not button_U.value:  # up pressed
-        y = y - 5
-    # move Up
-
-    down_fill = 0
-    if not button_D.value:  # down pressed
-        y = y + 5
-    # move down
-
-    left_fill = 0
-    if not button_L.value:  # left pressed
-        x = x - 5
-    # move left
-
-    right_fill = 0
-    if not button_R.value:  # right pressed
-        x = x + 5
-    # move right
+    up_card()
+    
+    down_card()
+    
+    right_card()
+    
+    left_card()
 
     center_fill = 0
     # center
@@ -201,7 +191,7 @@ while True:
         draw_bullet((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y)))
          # draw front line
     
-    # A button
+    # A deckbutton
 
     B_fill = 0
     if not button_B.value: # button 6 pressed
@@ -215,7 +205,7 @@ while True:
     if x <= 0:
         draw_player(0, y, player_f(0), player_f(y))
    
-    elif x >= 240:
+    idelif x >= 240:
         draw_player(player_i(200), y, 200, player_f(y))
    
     elif y <= 0:
@@ -228,5 +218,4 @@ while True:
         draw.ellipse((x, y, player_f(x), player_f(y)), outline=button_outline, fill = button_outline) # draw player
 
     # Display the Image
-    disp.image(image)
-
+    disp.image(image)    
