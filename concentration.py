@@ -95,7 +95,7 @@ image = Image.new("RGB", (width, height))
 draw = ImageDraw.Draw(image)
 
 # Clear display.
-draw.rectangle((0, 0, width, height), outline=0, fill=(255, 0, 0))
+draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 disp.image(image)
 
 # Get drawing object to draw on image.
@@ -112,98 +112,134 @@ green = "#00FF00"
 cyan = "#00FFFF"
 pink = "#FF00FF"
 white = "#FFFFFF"
+blue = "#0000FF"
 
 fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 30)
 
 
-def player_i(num):
-    return num - 10 # start position of player
-def player_f(num):
-   return  num + 10 # final position of player
- 
-def up_card(y):
-    if not button_U.value:  # up pressed
-        y = y - 5
-    # move up card
+def draw_card(x_pos, y_pos, card_width, card_height):
+    for j in range(0, 4):
+        for i in range(0, 6):
+            draw.rectangle([(x_pos + 39*i , y_pos + 55*j), (x_pos + card_width + 39*i, y_pos + card_height + 55*j)], outline = white, fill = white)
 
-def down_card(y):
-    if not button_D.value:
-        y = y + 5
-    # move down in card
-
-def right_card(x):
-    if not button_R.value:
-        x = x + 5
-    # move right in
-
-def left_card(x):
-    if not button_L.value:
-        x = x - 5
-    # move left
-
-def total_card(x):
-    for i in range(0,52-x): # make deck [total(52) - x =] card number you defined
-        deck.pop()    
-
-def draw_card(x_pos, y_pos):
-    for j in range(0, 3):
-        for i in range(0, 12):
-            draw.rectangle((x_pos + i*15 , y_pos + j*18, 9, 12), outline=white, fill=white)
-
-def draw_player(x_pos, y_pos):
-    draw.rectangle((x_pos))
-
-spade = ['spadeace', 'spade2', 'spade3', 'spade4', 'spade5', 'spade6', 'spade7', 'spade8', 'spade9', 'spade10', 'spadejack', 'spadequeen', 'spadeking']
-
-heart = ['heartace', 'heart2', 'heart3', 'heart4', 'heart5', 'heart6', 'heart7', 'heart8', 'heart9', 'heart10', 'heartjack', 'heartqueen', 'heartking']
-
-diamond = ['diamondace', 'diamond2', 'diamond3', 'diamond4', 'diamond5', 'diamond6', 'diamond7', 'diamond8', 'diamond9', 'diamond10', 'diamondjack', 'diamondqueen', 'diamondking']
-
-clover = ['cloverace', 'clover2', 'clover3', 'clover4', 'clover5', 'clover6', 'clover7', 'clover8', 'clover9', 'clover9', 'cloverjack', 'cloverqueen', 'cloverking']
-
-deck = spade + heart + diamond + clover  # define deck
-
-card_x_pos = 20
-card_y_pos = 106 # card's start point
+def player_pos(x_pos, y_pos, player_width, player_height, color):
+    draw.rectangle([(x_pos,y_pos), (x_pos+player_width, y_pos+player_height)], outline = color, fill = 0, width = 2)
 
 
+deck = []
+
+for i in ["spade", "heart", "diamond", "clover"]:
+    for j in ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]:
+        deck.append((i,j))
+
+print(deck)
+    
+
+
+# define deck
+
+start_x_pos = 10
+start_y_pos = 20 # card's start point
+
+x_pos = start_x_pos
+y_pos = start_y_pos # player's position
+
+card_width = 25
+card_height = 36
+
+player_width = card_width + 10
+player_height = card_height + 10
+
+# data that we need to know 
+
+x_point = 0
+y_point = 0
+
+checkpoint = 0
+
+random.shuffle(deck) # randomly shuffle deck
+
+ingame_deck = deck[0:24] # define deck consists of 24 cards which you use in game
+
+print(ingame_deck)
 
 while True:
 
-    random.shuffle(deck) # randomly shuffle deck
-        
-    total card(40)
-
+    num = y_point*6+ x_point
+    
     clear()
 
-    up_card()
+    player_pos(x_pos-5, y_pos-5, player_width, player_height, green)
+   
+    draw_card(start_x_pos, start_y_pos, card_width, card_height)
+   
+    if not button_U.value:  # up pressed 
+        y_pos = y_pos - 55
+        if y_pos < 20:
+           y_pos = 20
+    # move up between card
+        y_point = y_point - 1
+        if y_point < 0:
+            y_point = 0
+
+    if not button_D.value:
+        y_pos = y_pos + 55 
+        if y_pos > 185:
+            y_pos = 185
+    # move down between card
+        y_point =  y_point + 1
+        
     
-    down_card()
+    if not button_R.value:  
+       x_pos = x_pos + 39
+       if x_pos > 205:
+           x_pos = 205
+    # move right in card
+       x_point = x_point + 1
+
     
-    right_card()
+    if not button_L.value:
+        x_pos = x_pos - 39
+        if x_pos < 10:
+            x_pos = 10
+    # move left in card
+        x_point = x_point - 1
+        if x_point < 0:
+            x_point = 0
+
+    if not button_C.value:
+         draw.rectangle([(x_pos-5,y_pos-5), (x_pos-5 + player_width, y_pos-5 + player_height)], outline = green, fill = green)
+         checkpoint = checkpoint + 1
+         if checkpoint == 1:
+             first_x_pos = x_pos
+             first_y_pos = y_pos
+         if checkpoint == 2:
+             second_x_pos = x_pos
+             second_y_pos = y_pos
+         if checkpoint > 2:
+             checkpoint = 0
+         time.sleep(0.1)
+         draw.text((20, 150), ingame_deck[num], font=fnt, fill=green)
     
-    left_card()
+    if checkpoint == 1:
+        draw.rectangle([(first_x_pos, first_y_pos), (first_x_pos + card_width, first_y_pos + card_height)], outline = red, fill = red)
+
+    if checkpoint == 2:
+        draw.rectangle([(first_x_pos, first_y_pos), (first_x_pos + card_width, first_y_pos + card_height)], outline = red, fill = red)
+        draw.rectangle([(second_x_pos, second_y_pos), (second_x_pos + card_width, second_y_pos + card_height)], outline = blue, fill = blue)
+        
+    
 
     center_fill = 0
+
     # center
 
     A_fill = 0
-    if not button_A.value:  # button 5 pressed
-        checkpoint_a =  checkpoint_a + 1
-    if not checkpoint_a == 0:
-        draw_bullet((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y)))
-         # draw front line
-    
-    # A deckbutton
+    # A button
 
     B_fill = 0
-    if not button_B.value: # button 6 pressed
-        checkpoint_b  = checkpoint_b + 1
-    if not checkpoint_b == 0:     
-        draw.line(((player_f(x)+x)/2, shoot_b_i(player_f(shoot_b_y)), (player_f(x)+x)/2, shoot_b_f(player_f(shoot_b_y))), fill = button_outline, width = 2, joint = None) #draw back line
-    
     # B button
     
-    
     # Display the Image
-    disp.image(image)    
+    disp.image(image) 
+    time.sleep(0.01)
